@@ -5,14 +5,82 @@
     android:id="@+id/main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="#141414"
     tools:context=".MainActivity">
 
+    <!-- Logo Image (Left) -->
 
-    mi
-    lu
-    jem
-    te
-    <3
+    <!-- Plus Button (Right) -->
 
+    <!-- Bottom Navigation Bar -->
+
+    <ImageView
+        android:id="@+id/logoImage"
+        android:layout_width="233dp"
+        android:layout_height="83dp"
+        android:layout_marginStart="32dp"
+        android:layout_marginTop="32dp"
+        android:src="@drawable/logo"
+        android:tint="#FFFFFF"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <ImageButton
+        android:id="@+id/plusButton"
+        android:layout_width="61dp"
+        android:layout_height="84dp"
+        android:layout_marginTop="32dp"
+        android:layout_marginEnd="32dp"
+        android:background="?attr/selectableItemBackgroundBorderless"
+        android:contentDescription="Add"
+        android:padding="12dp"
+        android:scaleType="fitCenter"
+        android:src="@drawable/plus"
+        android:tint="#FFFFFF"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/bottomBar"
+        android:layout_width="match_parent"
+        android:layout_height="56dp"
+        android:background="#000000"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent">
+
+        <!-- Navigation Button (Left) -->
+        <ImageButton
+            android:id="@+id/navigationButton"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:layout_marginStart="80dp"
+            android:background="?attr/selectableItemBackgroundBorderless"
+            android:contentDescription="Navigation"
+            android:padding="12dp"
+            android:scaleType="fitCenter"
+            android:src="@drawable/navigation"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:tint="#FFFFFF" />
+
+        <!-- Account Button (Right) -->
+        <ImageButton
+            android:id="@+id/accountButton"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:layout_marginEnd="80dp"
+            android:background="?attr/selectableItemBackgroundBorderless"
+            android:contentDescription="Account"
+            android:padding="12dp"
+            android:scaleType="fitCenter"
+            android:src="@drawable/account"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:tint="#FFFFFF" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>
