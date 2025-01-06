@@ -1,5 +1,6 @@
 package sk.spsepo.grouppocket;
 
+import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.view.View;
@@ -38,6 +39,17 @@ public class MainActivity extends AppCompatActivity {
             Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
             return insets;
+        });
+
+        // Add click listeners for navigation buttons
+        findViewById(R.id.navigationButton).setOnClickListener(v -> {
+            // Already on MainActivity, no action needed
+        });
+
+        findViewById(R.id.accountButton).setOnClickListener(v -> {
+            Intent intent = new Intent(MainActivity.this, AccountActivity.class);
+            intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
+            startActivity(intent);
         });
     }
 }
