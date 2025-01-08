@@ -3,15 +3,15 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#141414">
+    android:background="#141414"
+    android:fitsSystemWindows="true">
 
     <!-- Pay button -->
-
-    <!-- Close button -->
     <LinearLayout
         android:id="@+id/payButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_alignParentStart="true"
         android:layout_marginStart="32dp"
         android:layout_marginTop="48dp"
         android:background="@drawable/account_settings_background"
@@ -22,6 +22,7 @@
         android:paddingVertical="12dp">
 
         <TextView
+            android:id="@+id/payText"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:paddingLeft="10dp"
@@ -32,6 +33,20 @@
             android:textStyle="bold" />
     </LinearLayout>
 
+    <!-- Settings button -->
+    <ImageView
+        android:id="@+id/settingsButton"
+        android:layout_width="61dp"
+        android:layout_height="84dp"
+        android:layout_toStartOf="@id/closeButton"
+        android:layout_marginTop="32dp"
+        android:layout_marginEnd="16dp"
+        android:background="?attr/selectableItemBackgroundBorderless"
+        android:padding="12dp"
+        android:src="@drawable/settings"
+        app:tint="#FFFFFF" />
+
+    <!-- Close button -->
     <ImageView
         android:id="@+id/closeButton"
         android:layout_width="61dp"

@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@drawable/account_settings_background"
+    android:orientation="vertical"
+    android:layout_gravity="bottom"
+    android:padding="16dp">
+
+    <TextView
+        android:id="@+id/leaveGroupButton"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="?attr/selectableItemBackground"
+        android:clickable="true"
+        android:focusable="true"
+        android:gravity="center"
+        android:paddingVertical="16dp"
+        android:text="Leave Group"
+        android:textColor="#FF4444"
+        android:textSize="16sp" />
+
+</LinearLayout> 

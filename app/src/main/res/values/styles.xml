@@ -55,4 +55,9 @@
         <item name="android:singleLine">true</item>
         <item name="android:imeOptions">actionNext</item>
     </style>
+
+    <style name="PopupAnimation">
+        <item name="android:windowEnterAnimation">@anim/slide_in_bottom</item>
+        <item name="android:windowExitAnimation">@anim/slide_out_bottom</item>
+    </style>
 </resources> 

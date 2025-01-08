@@ -11,6 +11,9 @@ import androidx.appcompat.app.AppCompatActivity;
 import java.util.List;
 import sk.spsepo.grouppocket.data.Group;
 import sk.spsepo.grouppocket.data.GroupStorage;
+import android.content.SharedPreferences;
+import android.content.Context;
+import sk.spsepo.grouppocket.data.AccountManager;
 
 public class MainActivity extends AppCompatActivity {
     private LinearLayout groupsContainer;
@@ -20,6 +23,10 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         
+        // Nastav email aktuálneho používateľa
+        AccountManager.setCurrentUserEmail(getSharedPreferences("user_prefs", MODE_PRIVATE)
+            .getString("user_email", ""));
+
         // Make status bar #141414 with white icons
         getWindow().setStatusBarColor(Color.parseColor("#141414"));
 
@@ -95,13 +102,32 @@ public class MainActivity extends AppCompatActivity {
                 }
                 totalAmount.setText(String.format("%.0f€", total));
 
-                boolean isPaid = Math.random() < 0.5;
+                // Skontroluj, či aktuálny používateľ zaplatil
+                String currentUser = AccountManager.getCurrentUserEmail();
+                boolean isPaid = group.getPaidMembers().contains(currentUser);
+                
+                // Nastav status platby podľa stavu platby
                 paymentStatus.setText(isPaid ? "PAID" : "UNPAID");
-                int statusColor = getResources().getColor(isPaid ? android.R.color.holo_green_light : android.R.color.holo_red_light);
+                int statusColor = getResources().getColor(
+                    isPaid ? android.R.color.holo_green_light : android.R.color.holo_red_light
+                );
                 paymentStatus.setTextColor(statusColor);
 
+                // Vypočítaj percentuálny podiel platby
                 View progressCircle = groupView.findViewById(R.id.progressCircle);
-                progressCircle.getBackground().setLevel(7500);
+                if (isPaid && total > 0) {
+                    // Vypočítaj sumu na člena
+                    double amountPerMember = total / group.getMembers().size();
+                    // Vypočítaj percento (amountPerMember z total)
+                    int percentage = (int)((amountPerMember / total) * 100);
+                    // Nastav úroveň kruhu (level je od 0 do 10000)
+                    int level = (percentage * 100);
+                    progressCircle.getBackground().setLevel(level);
+                    progressCircle.setVisibility(View.VISIBLE);
+                } else {
+                    // Ak používateľ nezaplatil, skry kruh
+                    progressCircle.setVisibility(View.GONE);
+                }
 
                 groupView.setOnClickListener(v -> {
                     Intent intent = new Intent(MainActivity.this, GroupActivity.class);

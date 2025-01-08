@@ -5,9 +5,9 @@
     android:orientation="vertical"
     android:padding="16dp">
 
-    <!-- Kontajner pre výdavky -->
+    <!-- Kontajner pre členov -->
     <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/expensesRecyclerView"
+        android:id="@+id/membersRecyclerView"
         android:layout_width="match_parent"
         android:layout_height="match_parent" />
 
