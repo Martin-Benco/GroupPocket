@@ -21,6 +21,9 @@
         <activity android:name=".AddTransactionActivity" />
         <activity android:name=".AccountActivity" />
         <activity android:name=".EditAccountActivity" />
+        <activity
+            android:name=".GroupActivity"
+            android:exported="false" />
         
     </application>
 </manifest>

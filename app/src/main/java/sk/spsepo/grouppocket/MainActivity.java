@@ -51,23 +51,67 @@ public class MainActivity extends AppCompatActivity {
         groupsContainer.removeAllViews();
         List<Group> groups = GroupStorage.loadGroups(this);
         
-        LayoutInflater inflater = LayoutInflater.from(this);
-        for (Group group : groups) {
-            View groupView = inflater.inflate(R.layout.item_group, groupsContainer, false);
+        // Získaj výšku ScrollView kontajnera
+        View scrollView = findViewById(R.id.scrollView);
+        scrollView.post(() -> {
+            int availableHeight = scrollView.getHeight();
+            int gapHeight = (int)(16 * getResources().getDisplayMetrics().density);
             
-            TextView groupName = groupView.findViewById(R.id.groupName);
-            TextView memberCount = groupView.findViewById(R.id.memberCount);
-            View deleteButton = groupView.findViewById(R.id.deleteButton);
+            // Vypočítaj výšku jednej skupiny
+            // Celková výška mínus 2 medzery, vydelené 3 skupinami
+            int groupHeight = (availableHeight - (2 * gapHeight)) / 3;
+            
+            // Vytvor skupiny s vypočítanou výškou
+            LayoutInflater inflater = LayoutInflater.from(this);
+            for (int i = 0; i < groups.size(); i++) {
+                Group group = groups.get(i);
+                View groupView = inflater.inflate(R.layout.item_group, groupsContainer, false);
+                
+                // Nastav parametre layoutu pre skupinu
+                LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(
+                    LinearLayout.LayoutParams.MATCH_PARENT,
+                    groupHeight
+                );
+                
+                // Pridaj medzeru medzi skupinami
+                if (i > 0) {
+                    params.topMargin = gapHeight;
+                }
+                
+                groupView.setLayoutParams(params);
+                
+                // Nastav obsah skupiny
+                TextView groupName = groupView.findViewById(R.id.groupName);
+                TextView memberCount = groupView.findViewById(R.id.memberCount);
+                TextView totalAmount = groupView.findViewById(R.id.totalAmount);
+                TextView paymentStatus = groupView.findViewById(R.id.paymentStatus);
 
-            groupName.setText(group.getName());
-            memberCount.setText(group.getMembers().size() + " members");
+                groupName.setText(group.getName());
+                memberCount.setText(group.getMembers().size() + " members");
 
-            deleteButton.setOnClickListener(v -> {
-                GroupStorage.deleteGroup(this, group.getName());
-                loadGroups(); // Refresh the list
-            });
+                double total = 0;
+                for (Group.Expense expense : group.getExpenses()) {
+                    total += expense.getAmount();
+                }
+                totalAmount.setText(String.format("%.0f€", total));
 
-            groupsContainer.addView(groupView);
-        }
+                boolean isPaid = Math.random() < 0.5;
+                paymentStatus.setText(isPaid ? "PAID" : "UNPAID");
+                int statusColor = getResources().getColor(isPaid ? android.R.color.holo_green_light : android.R.color.holo_red_light);
+                paymentStatus.setTextColor(statusColor);
+
+                View progressCircle = groupView.findViewById(R.id.progressCircle);
+                progressCircle.getBackground().setLevel(7500);
+
+                groupView.setOnClickListener(v -> {
+                    Intent intent = new Intent(MainActivity.this, GroupActivity.class);
+                    intent.putExtra("groupName", group.getName());
+                    startActivity(intent);
+                    overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
+                });
+
+                groupsContainer.addView(groupView);
+            }
+        });
     }
 }
