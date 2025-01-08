@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layer-list xmlns:android="http://schemas.android.com/apk/res/android">
+    <!-- Pozadie kruhu -->
+    <item>
+        <shape android:shape="ring"
+            android:thickness="6dp"
+            android:useLevel="false">
+            <solid android:color="#1E1E1E" />
+        </shape>
+    </item>
+    <!-- Progress na 75% -->
+    <item>
+        <rotate
+            android:fromDegrees="-90"
+            android:toDegrees="-90">
+            <shape android:shape="ring"
+                android:thickness="6dp"
+                android:useLevel="true">
+                <solid android:color="#ff914d" />
+                <size android:width="100dp" android:height="100dp"/>
+            </shape>
+        </rotate>
+    </item>
+</layer-list> 
