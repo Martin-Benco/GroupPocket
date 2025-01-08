@@ -12,12 +12,18 @@ public class GroupPagerAdapter extends FragmentStateAdapter {
 
     @Override
     public Fragment createFragment(int position) {
-        // Vráť príslušný fragment podľa pozície
-        return position == 0 ? new GroupOverviewFragment() : new GroupExpensesFragment();
+        switch (position) {
+            case 0:
+                return new GroupPeopleFragment(); // Nová stránka pre ľudí
+            case 1:
+                return new GroupOverviewFragment();
+            default:
+                return new GroupExpensesFragment();
+        }
     }
 
     @Override
     public int getItemCount() {
-        return 2; // Máme 2 stránky
+        return 3; // Teraz máme 3 stránky
     }
 } 
