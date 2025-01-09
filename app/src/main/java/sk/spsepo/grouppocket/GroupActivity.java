@@ -8,6 +8,7 @@ import android.view.ViewGroup;
 import android.widget.LinearLayout;
 import android.widget.PopupWindow;
 import android.widget.Toast;
+import android.view.Gravity;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.viewpager2.widget.ViewPager2;
 import com.google.android.material.tabs.TabLayout;
@@ -18,13 +19,14 @@ import sk.spsepo.grouppocket.data.GroupStorage;
 import sk.spsepo.grouppocket.data.AccountManager;
 import android.widget.TextView;
 import androidx.fragment.app.Fragment;
+import android.view.animation.AnimationUtils;
 
 public class GroupActivity extends AppCompatActivity {
     
     private void showSettingsPopup() {
         View popupView = getLayoutInflater().inflate(R.layout.popup_group_settings, null);
         
-        // Vytvor popup s plnou šírkou a výškou
+        // Vytvor popup s plnou šírkou
         PopupWindow popupWindow = new PopupWindow(
             popupView,
             ViewGroup.LayoutParams.MATCH_PARENT,
@@ -34,50 +36,66 @@ public class GroupActivity extends AppCompatActivity {
 
         // Nastav pozadie a animáciu
         popupWindow.setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
-        popupWindow.setAnimationStyle(R.style.PopupAnimation);
+        popupWindow.setOutsideTouchable(true);
+        popupWindow.setFocusable(true);
         
-        // Nastav systémové UI flags aby popup prekryl navigačné tlačidlá
-        getWindow().getDecorView().setSystemUiVisibility(
-            View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
-            | View.SYSTEM_UI_FLAG_LAYOUT_STABLE
-        );
-        
-        // Nastav čiernu farbu pre navigačné tlačidlá
-        getWindow().setNavigationBarColor(Color.BLACK);
+        // Pridaj animáciu pre zatvorenie
+        popupWindow.setOnDismissListener(() -> {
+            android.view.animation.Animation anim = AnimationUtils.loadAnimation(this, R.anim.slide_down);
+            anim.setAnimationListener(new android.view.animation.Animation.AnimationListener() {
+                @Override
+                public void onAnimationStart(android.view.animation.Animation animation) {}
 
-        // Nastav click listener pre leave group
-        View leaveGroup = popupView.findViewById(R.id.leaveGroupButton);
-        leaveGroup.setOnClickListener(v -> {
-            // Odstráň skupinu zo súboru
+                @Override
+                public void onAnimationEnd(android.view.animation.Animation animation) {
+                    // Popup sa už zatvoril
+                }
+
+                @Override
+                public void onAnimationRepeat(android.view.animation.Animation animation) {}
+            });
+            popupView.startAnimation(anim);
+        });
+        
+        // Nastav onClick pre leave button
+        View leaveButton = popupView.findViewById(R.id.leaveGroupButton);
+        leaveButton.setOnClickListener(v -> {
             String groupName = getIntent().getStringExtra("groupName");
             List<Group> groups = GroupStorage.loadGroups(this);
-            groups.removeIf(group -> group.getName().equals(groupName));
+            
+            for (int i = 0; i < groups.size(); i++) {
+                if (groups.get(i).getName().equals(groupName)) {
+                    groups.remove(i);
+                    break;
+                }
+            }
+            
             GroupStorage.saveGroups(this, groups);
             
-            // Zatvor popup a aktivitu
-            popupWindow.dismiss();
-            finish();
-            overridePendingTransition(0, R.anim.slide_out_right);
-        });
+            // Spusti animáciu a potom zatvor popup
+            android.view.animation.Animation anim = AnimationUtils.loadAnimation(this, R.anim.slide_down);
+            anim.setAnimationListener(new android.view.animation.Animation.AnimationListener() {
+                @Override
+                public void onAnimationStart(android.view.animation.Animation animation) {}
 
-        // Pridaj listener pre zatvorenie popupu
-        popupWindow.setOnDismissListener(() -> {
-            // Obnov pôvodné systémové UI flags a farby
-            getWindow().getDecorView().setSystemUiVisibility(
-                View.SYSTEM_UI_FLAG_LAYOUT_STABLE
-                | View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
-                | View.SYSTEM_UI_FLAG_LIGHT_NAVIGATION_BAR
-            );
-            getWindow().setNavigationBarColor(Color.BLACK);
-            getWindow().setStatusBarColor(Color.parseColor("#141414"));
-        });
+                @Override
+                public void onAnimationEnd(android.view.animation.Animation animation) {
+                    popupWindow.dismiss();
+                    finish();
+                }
 
-        // Uprav onClick pre settings button
-        View settingsButton = findViewById(R.id.settingsButton);
-        settingsButton.setOnClickListener(v -> {
-            // Zobraz popup od spodku obrazovky
-            popupWindow.showAtLocation(settingsButton, android.view.Gravity.BOTTOM, 0, 0);
+                @Override
+                public void onAnimationRepeat(android.view.animation.Animation animation) {}
+            });
+            popupView.startAnimation(anim);
         });
+        
+        // Zobraz popup zo spodnej časti obrazovky
+        View rootView = findViewById(R.id.mainLayout);
+        popupWindow.showAtLocation(rootView, Gravity.BOTTOM, 0, 0);
+        
+        // Pridaj animáciu
+        popupView.startAnimation(AnimationUtils.loadAnimation(this, R.anim.slide_up));
     }
 
     @Override

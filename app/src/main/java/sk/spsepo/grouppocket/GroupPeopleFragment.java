@@ -81,11 +81,7 @@ public class GroupPeopleFragment extends Fragment {
             String member = members.get(position);
             holder.memberEmail.setText(member);
             
-            // Nastav rolu (admin pre prvého člena, member pre ostatných)
-            boolean isAdmin = position == 0;
-            holder.memberRole.setText(isAdmin ? "Admin" : "Member");
-            
-            // Získaj aktuálnu skupinu a jej stav
+            // Získaj aktuálnu skupinu
             String groupName = getActivity().getIntent().getStringExtra("groupName");
             List<Group> groups = GroupStorage.loadGroups(getContext());
             Group currentGroup = null;
@@ -99,16 +95,13 @@ public class GroupPeopleFragment extends Fragment {
             }
             
             if (currentGroup != null) {
-                // Vypočítaj sumu na člena
-                double totalAmount = 0;
-                for (Group.Expense expense : currentGroup.getExpenses()) {
-                    totalAmount += expense.getAmount();
-                }
-                double amountPerMember = totalAmount / currentGroup.getMembers().size();
-                holder.memberAmount.setText(String.format("%.2f€", amountPerMember));
+                // Vypočítaj a zobraz sumu pre člena
+                calculateAndDisplayAmounts(currentGroup, holder, member);
                 
-                // Nastav status platby pre admina (prvý člen)
+                // Nastav status platby
+                boolean isAdmin = position == 0;
                 if (isAdmin) {
+                    // Pre admina (prvý člen) zachovaj pôvodnú logiku
                     boolean isPaid = currentGroup.getPaidMembers().contains(currentUser);
                     holder.paymentStatus.setText(isPaid ? "PAID" : "UNPAID");
                     holder.paymentStatus.setTextColor(getResources().getColor(
@@ -116,6 +109,7 @@ public class GroupPeopleFragment extends Fragment {
                     ));
                 } else {
                     // Pre ostatných členov nastav UNPAID
+                    holder.paymentStatus.setVisibility(View.VISIBLE);
                     holder.paymentStatus.setText("UNPAID");
                     holder.paymentStatus.setTextColor(getResources().getColor(android.R.color.holo_red_light));
                 }
@@ -137,6 +131,27 @@ public class GroupPeopleFragment extends Fragment {
                 memberAmount = itemView.findViewById(R.id.memberAmount);
                 paymentStatus = itemView.findViewById(R.id.paymentStatus);
             }
+        }
+        
+        private void calculateAndDisplayAmounts(Group currentGroup, MemberViewHolder holder, String memberEmail) {
+            double totalAmountForMember = 0;
+            
+            // Prejdi všetky výdavky
+            for (Group.Expense expense : currentGroup.getExpenses()) {
+                List<String> contributors = expense.getContributors();
+                
+                // Ak nie sú nastavení contributors, považuj všetkých za contributors
+                if (contributors == null || contributors.isEmpty()) {
+                    totalAmountForMember += expense.getAmount() / currentGroup.getMembers().size();
+                } else {
+                    // Ak je členom contributors, pripočítaj jeho podiel
+                    if (contributors.contains(memberEmail)) {
+                        totalAmountForMember += expense.getAmount() / contributors.size();
+                    }
+                }
+            }
+            
+            holder.memberAmount.setText(String.format("%.2f€", totalAmountForMember));
         }
     }
 } 

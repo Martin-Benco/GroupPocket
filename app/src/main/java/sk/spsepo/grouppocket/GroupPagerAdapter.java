@@ -5,32 +5,36 @@ import androidx.fragment.app.FragmentActivity;
 import androidx.viewpager2.adapter.FragmentStateAdapter;
 
 public class GroupPagerAdapter extends FragmentStateAdapter {
-    public GroupPeopleFragment peopleFrag;
-    
-    public GroupPagerAdapter(FragmentActivity fa) {
-        super(fa);
+    private GroupPeopleFragment peopleFrag;
+    private GroupExpensesFragment expensesFrag;
+    private GroupChatFragment chatFrag;
+
+    public GroupPagerAdapter(FragmentActivity activity) {
+        super(activity);
         peopleFrag = new GroupPeopleFragment();
+        expensesFrag = new GroupExpensesFragment();
+        chatFrag = new GroupChatFragment();
     }
-    
+
     @Override
     public Fragment createFragment(int position) {
         switch (position) {
             case 0:
                 return peopleFrag;
             case 1:
-                return new GroupOverviewFragment();
+                return expensesFrag;
             case 2:
-                return new GroupExpensesFragment();
+                return chatFrag;
             default:
-                return null;
+                return peopleFrag;
         }
     }
-    
+
     @Override
     public int getItemCount() {
         return 3;
     }
-    
+
     public GroupPeopleFragment getPeopleFrag() {
         return peopleFrag;
     }

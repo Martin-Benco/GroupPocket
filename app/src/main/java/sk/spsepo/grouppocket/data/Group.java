@@ -28,13 +28,22 @@ public class Group {
     public static class Expense {
         private String name;
         private double amount;
+        private List<String> contributors;
 
         public Expense(String name, double amount) {
             this.name = name;
             this.amount = amount;
+            this.contributors = new ArrayList<>();
         }
 
         public String getName() { return name; }
         public double getAmount() { return amount; }
+        public List<String> getContributors() {
+            return contributors;
+        }
+
+        public void setContributors(List<String> contributors) {
+            this.contributors = contributors;
+        }
     }
 } 
